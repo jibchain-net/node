@@ -15,8 +15,10 @@
     "londonBlock": 0,
     "arrowGlacierBlock": 0,
     "grayGlacierBlock": 0,
-    "shanghaiBlock": null,
-    "cancunBlock": null,
+    "mergeForkBlock": 2200641,
+    "terminalTotalDifficulty": 512048629250937967,
+    "terminalTotalDifficultyPassed": true,
+    "shanghaiTime": 1701158251,
     "ethash": {}
   },
   "nonce": "0x0",

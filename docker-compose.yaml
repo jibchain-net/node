@@ -1,21 +1,60 @@
 version: "3"
 services:
-  jbc-bootnode:
-    image: jibchain/node:latest
+
+  node-el:
+    image: thorax/erigon:devel
     user: root
     entrypoint: /root/init-script.sh
+#    network_mode: host
     command:
-      - "--datadir=/datadir/geth"
+      - "--datadir=/datadir/erigon"
       - "--networkid=8899"
-      - "--bootnodes=enode://2fe036f0a233b05a92c229796dafbdd3d8c19eadc94b99ad04181e4e52d35f8500401a5aac0ed054575c5325f2db34fb491068c15858b65dd7354ca0ef442763@65.108.61.51:30303,enode://9789fb51f949a63fb9e34f7ee450c6de087c743083ce56fb46c1d3a15cb24bc41e988d71e71a95bd0d5a6c6b679f729f89dea487464a94af8d6ac55e161d0558@188.166.250.77:30303,enode://e07a8c0ca434fc67a09053972f25b1e7f614aa317d41100b07500b10c12982b8ae795777651daaf2fcc963d3aea36f980b0f3dd3c49d0e877a1716709d78b430@65.21.251.178:30303"
-      - "--v5disc"
-      - "--syncmode=snap"
-      - "--maxpeers=1000"
-    ports:
-      - "30303:30303"      
+      - --bootnodes=enode://74f719d76fbced15a34164de149815cb3dd3404153ca3759dae442f835b570920bdc60759693b466df2be8307d7e30715662605995c2c96c2259bac1d9a31967@65.108.126.254:32324
+      - --authrpc.addr=0.0.0.0
+      - --authrpc.port=8551
+      - --authrpc.vhosts=*
+      - --authrpc.jwtsecret=/config/jwt.hex
+      - --http.addr=0.0.0.0
+      - --http.api=eth,engine,erigon,web3,net,debug,trace,txpool,ots
+      - --http.port=8545
+      - --http.corsdomain=*
+      - --http.vhosts=*
+      - --ws
+      - --rpc.batch.limit=5000
+      - --rpc.batch.concurrency=1000
     volumes:
-      - "./genesis.json:/datadir/genesis.json"
-      - "./datadir/geth:/datadir/geth"
-      - "./init-script.sh:/root/init-script.sh"
+      - ./genesis.json:/genesis.json
+      - ./data:/datadir
+      - ./init-script.sh:/root/init-script.sh
+      - ./config:/config
+    ports:
+      - 30303:30303
+      - 8545:8545
     restart: always
 
+  lighthouse:
+    image: sigp/lighthouse
+    user: root
+    network_mode: host
+    volumes:
+      - ./data/lighthouse:/root/.lighthouse
+      - ./config:/config
+    command:
+      - lighthouse
+      - beacon
+      - --execution-endpoint=http://node-el:8551
+      - --execution-jwt=/config/jwt.hex
+      - --testnet-dir=/config
+      - --http-allow-sync-stalled
+      - --disable-peer-scoring
+      - --http
+      - --http-address=0.0.0.0
+      - --http-port=5002
+      - --disable-packet-filter
+      - --eth1
+      - --target-peers=5
+      - --enr-address=xx.xx.xx.xx
+      - --enr-udp-port=9100
+      - --enr-tcp-port=9100
+      - --port=9100
+      - --boot-nodes=enr:-MS4QDTd7LbtmtvUhbLWbHZ4o2jWmfMl-5hfgHpCh4Arl1NIWGY3bt8ztKJIV3uTEeWf_xRbRy9ASoK7dCtYGam4yZEQh2F0dG5ldHOIAAAAAAAAAACEZXRoMpAY_TCCQACImf__________gmlkgnY0gmlwhEFsfv6EcXVpY4IjjYlzZWNwMjU2azGhAtJJHhhHUQ_QDG-IIXIH-VeIB5ELxroUrHf8D7s5_CsliHN5bmNuZXRzAIN0Y3CCI4yDdWRwgiOM
