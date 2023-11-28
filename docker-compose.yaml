@@ -30,6 +30,7 @@ services:
     ports:
       - 30303:30303
       - 8545:8545
+      - 8551:8551
     restart: always
 
   lighthouse:
@@ -42,7 +43,7 @@ services:
     command:
       - lighthouse
       - beacon
-      - --execution-endpoint=http://node-el:8551
+      - --execution-endpoint=http://127.0.0.1:8551
       - --execution-jwt=/config/jwt.hex
       - --testnet-dir=/config
       - --http-allow-sync-stalled
