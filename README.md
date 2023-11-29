@@ -1,3 +1,3 @@
-# node
+# The JBC Blockchain Network (Node)
 
-edit docker-compose.yaml change xx.xx.xx.xx to public ip be for start docker compose
+## How to run a node
