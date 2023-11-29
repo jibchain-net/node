@@ -2,12 +2,12 @@ version: "3"
 services:
 
   node-el:
-    image: thorax/erigon:devel
+    image: ethereum/client-go
     user: root
     entrypoint: /root/init-script.sh
 #    network_mode: host
     command:
-      - "--datadir=/datadir/erigon"
+      - "--datadir=/datadir/geth"
       - "--networkid=8899"
       - --bootnodes=enode://74f719d76fbced15a34164de149815cb3dd3404153ca3759dae442f835b570920bdc60759693b466df2be8307d7e30715662605995c2c96c2259bac1d9a31967@65.108.126.254:32324
       - --authrpc.addr=0.0.0.0
@@ -15,13 +15,10 @@ services:
       - --authrpc.vhosts=*
       - --authrpc.jwtsecret=/config/jwt.hex
       - --http.addr=0.0.0.0
-      - --http.api=eth,engine,erigon,web3,net,debug,trace,txpool,ots
+      - --http.api=eth,engine,erigon,web3,net
       - --http.port=8545
       - --http.corsdomain=*
       - --http.vhosts=*
-      - --ws
-      - --rpc.batch.limit=5000
-      - --rpc.batch.concurrency=1000
     volumes:
       - ./genesis.json:/genesis.json
       - ./data:/datadir
