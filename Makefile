@@ -17,4 +17,4 @@ stop-validator:
 	docker compose -f validator.yaml down
 
 validator-logs:
-	docker logs -f validator.yaml
+	docker compose -f validator.yaml logs
