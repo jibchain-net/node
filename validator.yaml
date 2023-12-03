@@ -14,5 +14,5 @@ services:
       - --testnet-dir=/config
       - --init-slashing-protection
       - --graffiti=${NODE_GRAFFITI}
-      - --suggested-fee-recipient=0x53D1644eE7d5c3BF830B2E13163f99B90bf34b93
+      - --suggested-fee-recipient=${FEE_RECIPIENT}
       - --debug-level=info
