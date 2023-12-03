@@ -37,6 +37,9 @@ services:
     volumes:
       - ./data/lighthouse:/root/.lighthouse
       - ./config:/config
+    ports:
+      - 0.0.0.0:9100:9100/tcp
+      - 0.0.0.0:9100:9100/udp
     command:
       - lighthouse
       - beacon
