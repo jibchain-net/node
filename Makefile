@@ -13,7 +13,7 @@ import-validator-key:
 run-validator:
 	docker compose -f validator.yaml up -d
 
-stop-validator
+stop-validator:
 	docker compose -f validator.yaml down
 
 validator-logs:
