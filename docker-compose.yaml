@@ -5,25 +5,24 @@ services:
     container_name: jbc-execution
     image: ethereum/client-go
     user: root
-    entrypoint: /root/init-script.sh
+    entrypoint: /root/geth-script.sh
     command:
       - "--datadir=/datadir/geth"
       - "--networkid=${NETWORK_ID}"
-      - --bootnodes=${EXECUTION_BOOTNODES}
       - --authrpc.addr=0.0.0.0
       - --authrpc.port=8551
       - --authrpc.vhosts=*
       - --authrpc.jwtsecret=/config/jwt.hex
       - --http
       - --http.addr=0.0.0.0
-      - --http.api=eth,engine,erigon,web3,net
+      - --http.api=eth,engine,web3,net
       - --http.port=8545
       - --http.corsdomain=*
       - --http.vhosts=*
     volumes:
       - ./genesis.json:/genesis.json
       - ./data:/datadir
-      - ./init-script.sh:/root/init-script.sh
+      - ./geth-script.sh:/root/geth-script.sh
       - ./config:/config
     ports:
       - 30303:30303
@@ -34,12 +33,7 @@ services:
     container_name: jbc-consensus
     image: sigp/lighthouse
     user: root
-    volumes:
-      - ./data/lighthouse:/root/.lighthouse
-      - ./config:/config
-    ports:
-      - 0.0.0.0:9100:9100/tcp
-      - 0.0.0.0:9100:9100/udp
+    entrypoint: /root/lighthouse-script.sh
     command:
       - lighthouse
       - beacon
@@ -58,4 +52,10 @@ services:
       - --enr-udp-port=9100
       - --enr-tcp-port=9100
       - --port=9100
-      - --boot-nodes=${BOOTNODE_ENR}
+    volumes:
+      - ./data/lighthouse:/root/.lighthouse
+      - ./config:/config
+      - ./lighthouse-script.sh:/root/lighthouse-script.sh
+    ports:
+      - 0.0.0.0:9100:9100/tcp
+      - 0.0.0.0:9100:9100/udp
