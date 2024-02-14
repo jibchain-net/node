@@ -3,7 +3,7 @@ services:
 
   jbc-execution:
     container_name: jbc-execution
-    image: ethereum/client-go
+    image: ethereum/client-go:v1.13.5
     user: root
     entrypoint: /root/geth-script.sh
     command:
@@ -31,7 +31,7 @@ services:
 
   jbc-consensus:
     container_name: jbc-consensus
-    image: sigp/lighthouse
+    image: sigp/lighthouse:v4.5.0
     user: root
     entrypoint: /root/lighthouse-script.sh
     command:
