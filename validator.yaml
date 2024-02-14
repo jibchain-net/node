@@ -16,3 +16,10 @@ services:
       - --graffiti=${NODE_GRAFFITI}
       - --suggested-fee-recipient=${FEE_RECIPIENT}
       - --debug-level=info
+      - --http-allow-origin=*
+      - --unencrypted-http-transport     
+      - --http 
+      - --http-address=0.0.0.0 
+      - --http-port=5062      
+    ports:
+      - 5062:5062 
