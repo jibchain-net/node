@@ -1,0 +1,53 @@
+version: "3.8"
+services:
+
+  jbc-execution:
+    container_name: jbc-execution
+    image: ethereum/client-go:v1.13.5
+    user: root
+    entrypoint: /root/geth-script.sh
+    command:
+      - "--datadir=/datadir/geth"
+      - "--networkid=${NETWORK_ID}"
+      - --authrpc.addr=0.0.0.0
+      - --authrpc.port=8551
+      - --authrpc.vhosts=*
+      - --authrpc.jwtsecret=/config/jwt.hex
+      - --http
+      - --http.addr=0.0.0.0
+      - --http.api=eth,engine,web3,net
+      - --http.port=8545
+      - --http.corsdomain=*
+      - --http.vhosts=*
+    volumes:
+      - ./genesis.json:/genesis.json
+      - ./data:/datadir
+      - ./geth-script.sh:/root/geth-script.sh
+      - ./config:/config
+    ports:
+      - 30303:30303
+      - 8545:8545
+    restart: always
+
+  jbc-consensus:
+    container_name: jbc-consensus
+    image: gcr.io/prysmaticlabs/prysm/beacon-chain:stable
+    user: root
+    command:
+      - --config-file=/config/config.yaml
+      - --chain-id=${NETWORK_ID}
+      - --datadir=/data 
+      - --jwt-secret=/config/jwt.hex
+      - --rpc-host=0.0.0.0 
+      - --grpc-gateway-host=0.0.0.0 
+      - --monitoring-host=0.0.0.0 
+      - --execution-endpoint=http://jbc-execution:8551
+      - --accept-terms-of-use
+    volumes:
+      - ./data/prysm:/data
+      - ./config:/config
+    ports:
+      - 0.0.0.0:13000:13000/tcp
+      - 0.0.0.0:13000:13000/udp
+    restart: always
+    
