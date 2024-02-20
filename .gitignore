@@ -1,2 +1,4 @@
 .env
+beacon-chain
+prysmctl
 data
