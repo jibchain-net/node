@@ -31,10 +31,10 @@ services:
 
   jbc-consensus:
     container_name: jbc-consensus
-    image: gcr.io/prysmaticlabs/prysm/beacon-chain:v4.0.2
+    image: gcr.io/prysmaticlabs/prysm/beacon-chain:v4.0.0
     user: root
     command:
-      - --chain-config-file=/config/config.yaml
+      - --chain-config-file=/config/config-prysm.yml
       - --genesis-state=/config/genesis.ssz
       - --chain-id=${NETWORK_ID}
       - --datadir=/data 
