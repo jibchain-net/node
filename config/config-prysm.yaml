@@ -1,5 +1,5 @@
 # Extends the mainnet preset
-PRESET_BASE: 'interop'
+# PRESET_BASE: 'interop'
 CONFIG_NAME: 'interop' # needs to exist because of Prysm. Otherwise it conflicts with mainnet genesis
 
 # Genesis
