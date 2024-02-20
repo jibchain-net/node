@@ -31,22 +31,18 @@ services:
 
   jbc-consensus:
     container_name: jbc-consensus
-    image: gcr.io/prysmaticlabs/prysm/beacon-chain:latest
+    image: consensys/teku:latest
     user: root
     command:
-      - --interop-eth1data-votes
-      - --chain-config-file=/config/config-prysm.yaml
+      - --network=/config/config-teku.yaml
       - --genesis-state=/config/genesis.ssz
-      - --chain-id=${NETWORK_ID}
-      - --datadir=/data 
-      - --jwt-secret=/config/jwt.hex
-      - --rpc-host=0.0.0.0 
-      - --grpc-gateway-host=0.0.0.0 
-      - --monitoring-host=0.0.0.0 
-      - --execution-endpoint=http://jbc-execution:8551
-      - --accept-terms-of-use
+      - --ee-endpoint=http://jbc-execution:8545
+      - --ee-jwt-secret-file=/config/jwt.hex
+      - --data-path=/data
+      - --p2p-discovery-bootnodes=enr:-MS4QO7nnkhvlmO8PjGbX89mCWKoB8RVmvm3yYrlchLWW1lpEsfT0ONYqezLoPLtbJyeMHHXdB1Y0T3Se6KdUF4SXyYTh2F0dG5ldHOIAAAAAAAAAACEZXRoMpAY_TCCQACImf__________gmlkgnY0gmlwhIe1BPOEcXVpY4IjjYlzZWNwMjU2azGhAqAFlsx85u3GpSrGQ7Q0Vdgb8OCyvQYcJqgkfF57TPr-iHN5bmNuZXRzAIN0Y3CCI4yDdWRwgiOM
+      - --ignore-weak-subjectivity-period-enabled
     volumes:
-      - ./data/prysm:/data
+      - ./data/teku:/data
       - ./config:/config
     ports:
       - 0.0.0.0:13000:13000/tcp
