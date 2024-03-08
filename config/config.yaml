@@ -38,7 +38,7 @@ SHARDING_FORK_EPOCH: 18446744073709551615
 
 # Deneb
 DENEB_FORK_VERSION: 0x08008899
-DENEB_FORK_EPOCH: 22792
+DENEB_FORK_EPOCH: 22911
 
 # Time parameters
 # ---------------------------------------------------------------
