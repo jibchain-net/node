@@ -3,7 +3,7 @@ services:
 
   jbc-execution:
     container_name: jbc-execution
-    image: ethereum/client-go
+    image: ethereum/client-go:v1.13.13
     user: root
     entrypoint: /root/geth-script.sh
     command:
@@ -31,7 +31,7 @@ services:
 
   jbc-consensus:
     container_name: jbc-consensus
-    image: sigp/lighthouse
+    image: sigp/lighthouse:v5.0.0
     user: root
     entrypoint: /root/lighthouse-script.sh
     command:
@@ -52,6 +52,7 @@ services:
       - --enr-udp-port=9100
       - --enr-tcp-port=9100
       - --port=9100
+      - --checkpoint-sync-url=https://metrabyte-cl.jibchain.net/
     volumes:
       - ./data/lighthouse:/root/.lighthouse
       - ./config:/config
@@ -59,3 +60,5 @@ services:
     ports:
       - 0.0.0.0:9100:9100/tcp
       - 0.0.0.0:9100:9100/udp
+      - 0.0.0.0:5002:5002/tcp
+      - 0.0.0.0:5002:5002/udp
