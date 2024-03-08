@@ -2,7 +2,7 @@ version: "3.8"
 services:
   jbc-validator:
     container_name: jbc-validator
-    image: sigp/lighthouse
+    image: sigp/lighthouse:v5.0.0
     user: root
     volumes:
       - ./data/lighthouse:/root/.lighthouse
