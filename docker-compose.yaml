@@ -53,6 +53,7 @@ services:
       - --enr-tcp-port=9100
       - --port=9100
       - --checkpoint-sync-url=https://metrabyte-cl.jibchain.net/
+      - --prune-blobs=false
     volumes:
       - ./data/lighthouse:/root/.lighthouse
       - ./config:/config
