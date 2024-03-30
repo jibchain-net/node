@@ -21,6 +21,7 @@ services:
     volumes:
       - ./genesis.json:/genesis.json
       - ./data:/datadir
+      - ./config/static-nodes.json:/datadir/besu/static-nodes.json
       - ./config:/config
     ports:
       - 8545:8545
