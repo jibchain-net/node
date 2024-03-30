@@ -13,7 +13,7 @@ services:
       - --engine-jwt-secret=/config/jwt.hex
       - --engine-host-allowlist=*
       - --p2p-host=0.0.0.0
-      - --p2p-interface=${NODE_PUBLIC_IP}
+      - --p2p-interface=0.0.0.0
       - --host-allowlist=*
       - --Xdns-enabled=true
       - --nat-method=docker
