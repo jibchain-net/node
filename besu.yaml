@@ -22,8 +22,12 @@ services:
       - ./data:/datadir
       - ./config:/config
     ports:
-      - 30303:30303
       - 8545:8545
+      - 0.0.0.0:30303:30303/tcp
+      - 0.0.0.0:30303:30303/udp
+      - 0.0.0.0:9000:8000/tcp
+      - 0.0.0.0:9000:9000/udp
+
     restart: always
 
   jbc-consensus:
