@@ -11,6 +11,7 @@ services:
       - --rpc-ws-enabled
       - --rpc-http-enabled
       - --engine-jwt-secret=/config/jwt.hex
+      - --engine-host-allowlist=*
       - --p2p-host=${NODE_PUBLIC_IP}
       - --host-allowlist=*
       - --nat-method=DOCKER
