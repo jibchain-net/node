@@ -1,0 +1,56 @@
+version: "3.8"
+services:
+
+  jbc-execution:
+    container_name: jbc-execution
+    image: ethereum/client-go:v1.13.13
+    user: root
+    entrypoint: /root/geth-script.sh
+    command:
+      - "--datadir=/datadir/geth"
+      - "--networkid=${NETWORK_ID}"
+      - --authrpc.addr=0.0.0.0
+      - --authrpc.port=8551
+      - --authrpc.vhosts=*
+      - --authrpc.jwtsecret=/config/jwt.hex
+      - --http
+      - --http.addr=0.0.0.0
+      - --http.api=eth,engine,web3,net
+      - --http.port=8545
+      - --http.corsdomain=*
+      - --http.vhosts=*
+    volumes:
+      - ./genesis.json:/genesis.json
+      - ./data:/datadir
+      - ./geth-script.sh:/root/geth-script.sh
+      - ./config:/config
+    ports:
+      - 30303:30303
+      - 8545:8545
+    restart: always
+
+  jbc-consensus:
+    container_name: jbc-consensus
+    image: gcr.io/prysmaticlabs/prysm/beacon-chain:latest
+    user: root
+    command:
+      - --chain-config-file=/config/config.yaml
+      - --genesis-state=/config/genesis.ssz
+      - --chain-id=${NETWORK_ID}
+      - --datadir=/data 
+      - --jwt-secret=/config/jwt.hex
+      - --rpc-host=0.0.0.0 
+      - --grpc-gateway-host=0.0.0.0 
+      - --monitoring-host=0.0.0.0
+      - --bootstrap-node=enr:-MS4QO7nnkhvlmO8PjGbX89mCWKoB8RVmvm3yYrlchLWW1lpEsfT0ONYqezLoPLtbJyeMHHXdB1Y0T3Se6KdUF4SXyYTh2F0dG5ldHOIAAAAAAAAAACEZXRoMpAY_TCCQACImf__________gmlkgnY0gmlwhIe1BPOEcXVpY4IjjYlzZWNwMjU2azGhAqAFlsx85u3GpSrGQ7Q0Vdgb8OCyvQYcJqgkfF57TPr-iHN5bmNuZXRzAIN0Y3CCI4yDdWRwgiOM,enr:-MS4QIwO0sSQdahvgPa8UlFBXV08pfRgsue7W_KlkcHfB4mbBbDrHAfpPlU8u3DXr2_ixHCqRGkkDXu5osJiJUN97G0Qh2F0dG5ldHOIAAAAAAAAAACEZXRoMpAY_TCCQACImf__________gmlkgnY0gmlwhFjG5oOEcXVpY4IjjYlzZWNwMjU2azGhAzwikSxEp5_DivEM4y6byo715UzqwHwZAp0q3i8NYpTxiHN5bmNuZXRzAIN0Y3CCI4yDdWRwgiOM,enr:-MS4QB9GpZD2SygbX7KByaW55l7S0p3FGAvxLbYrgUiRoFcHU9XZDQI6zMxRi64syMHxGiK8f0L1m9yIzaFgUh2Ld-wNh2F0dG5ldHOIAAAAAAAAAACEZXRoMpAY_TCCQACImf__________gmlkgnY0gmlwhEEVwNyEcXVpY4IjjYlzZWNwMjU2azGhA28nHNdJuzEef0O-Y0vpUuCAqqJixKDy-k3hWQr4THD6iHN5bmNuZXRzAIN0Y3CCI4yDdWRwgiOM,enr:-MS4QAVkgWC0lg43GNi5t76pim5yJsqZgnT_HI0QzZmmsfUbLVxeZwP54Tv5jX1kyr8295fDevjjK1L7N2MxN3v1OycEh2F0dG5ldHOIAAAAAAAAAACEZXRoMpAY_TCCQACImf__________gmlkgnY0gmlwhEEVwsaEcXVpY4IjjYlzZWNwMjU2azGhAm-JkY-JJ2ikAxNgvlK41IxG7GVYiW21Qg4jdn4gDgaCiHN5bmNuZXRzAIN0Y3CCI4yDdWRwgiOM,enr:-MS4QL5I43Gm89DXsQY5YeDdKHyNCXst_YhTsB4nFjdg2-B0GixOC-ZMesJlLfrhj-Kiu7OMrT5ylooVnKOlQ0WLNqMOh2F0dG5ldHOIAAAAAAAAAACEZXRoMpAY_TCCQACImf__________gmlkgnY0gmlwhF_ZOg6EcXVpY4IjjYlzZWNwMjU2azGhAmcg3uon6pHcIFyu9YZ5YecjQzzDFODdu4azseJffXtZiHN5bmNuZXRzAIN0Y3CCI4yDdWRwgiOM,enr:-MS4QBGksw7SJl5Vt2ID-9PinTc0WKjdOZJQOzqdPN5xoy-OJTei-kub3l_Y75y9vI6lGq9dj1tqRSCqM9dsufSuFfwNh2F0dG5ldHOIAAAAAAAAAACEZXRoMpAY_TCCQACImf__________gmlkgnY0gmlwhF6C3pGEcXVpY4IjjYlzZWNwMjU2azGhA7t0KXG_vZf7AyZ_HeGWDM7PHxInwYkFo7D63spS2MvliHN5bmNuZXRzAIN0Y3CCI4yDdWRwgiOM,enr:-MS4QFKB8W_MmHLZQtvc-20v7BsFg1j6MIfvxSYaYPGk6Z8aALu8KjGtdDmaG4lBnTCFGc0ASy8OMLjdSkmiUgMFr2QEh2F0dG5ldHOIAAAAAAAAAACEZXRoMpAY_TCCQACImf__________gmlkgnY0gmlwhMPJaaaEcXVpY4IjjYlzZWNwMjU2azGhArpfoVPPePJdNZ8mOAa_-d9Z5kKc2Ged6KZlnn6wP7FPiHN5bmNuZXRzAIN0Y3CCI4yDdWRwgiOM,enr:-MS4QBoYhwy-NTmmpAYJJ2isdVxJ3oZ40OfEfPG1S2C4irJIdj7GuOK3GCueoQJX0BxpGKquhn6fYBbzXvsjFiZ9ISUEh2F0dG5ldHOIAAAAAAAAAACEZXRoMpAY_TCCQACImf__________gmlkgnY0gmlwhEFsS_yEcXVpY4IjjYlzZWNwMjU2azGhA99ojsASmqaD00ClocBRn9bGGLYHoO4lgBKMUMdnFIzIiHN5bmNuZXRzAIN0Y3CCI4yDdWRwgiOM,enr:-MS4QPwUJVI5JcSCq6l8zBsNRU_dJgJOxJa8mJt-Fo9pCFpTIxczXzE3gsKW3F6lBux5y8e1baj7NHDO4Xu4hHwoGnsPh2F0dG5ldHOIAAAAAAAAAACEZXRoMpAY_TCCQACImf__________gmlkgnY0gmlwhEFseHSEcXVpY4IjjYlzZWNwMjU2azGhAlfRbk8emZxrLAQ4CK3bjz1z2Uzd8BXEQiNRSsGcaQSPiHN5bmNuZXRzAIN0Y3CCI4yDdWRwgiOM,enr:-MS4QEJHYd8PS1XwoqvaC7EsopJzX15BhWc_awfARkAkC8LDAJyP2oHZ_0X7HHn0H2rTj9iQwcNAQXfInu5KISAZ2MsHh2F0dG5ldHOIAAAAAAAAAACEZXRoMpAY_TCCQACImf__________gmlkgnY0gmlwhEFsw36EcXVpY4IjjYlzZWNwMjU2azGhAqBZMAhpY-HDiRu88T-vSXYym07hZoLz-bMT08a8RKwoiHN5bmNuZXRzAIN0Y3CCI4yDdWRwgiOM,enr:-MS4QNJIa24yHtUxoQO_Xp9qEZsrbsuG-wYDhzNlFalDhdHsBLcOi2AUsG3vSeAYpTrVl_2ZMXZsUnf3jv8h1p043OgEh2F0dG5ldHOIAAAAAAAAAACEZXRoMpAY_TCCQACImf__________gmlkgnY0gmlwhEFsydKEcXVpY4IjjYlzZWNwMjU2azGhA9Wten_DWVK3aUuVfJyqwV9L53pQsBl_V9BQ6lTh2Nd7iHN5bmNuZXRzAIN0Y3CCI4yDdWRwgiOM,enr:-MS4QMEiRrcvs_XIFzUkvFXedhceYBzwSrH8GkrYRnmpGi67TsyS7ss1T8rVzW8MhwKHVvNYUp5Xa_tjTBOM7_qv2sIEh2F0dG5ldHOIAAAAAAAAAACEZXRoMpAY_TCCQACImf__________gmlkgnY0gmlwhIe1PiiEcXVpY4IjjYlzZWNwMjU2azGhA0IRaEEacgxwPsdXTXkRWuKO-sh36F3PtzR8Z1TawKuAiHN5bmNuZXRzAIN0Y3CCI4yDdWRwgiOM,enr:-MS4QLciafMSIpmQ21-E-aOQH3mJwqO6pcq-SoZQuoEJbDxXS0sUSRQDWw0Tn83qCPnUFObnOc-IpOeRngfSfXkP3aIEh2F0dG5ldHOIAAAAAAAAAACEZXRoMpAY_TCCQACImf__________gmlkgnY0gmlwhF_ZepaEcXVpY4IjjYlzZWNwMjU2azGhAx40S7XpXa_GS9tQvYwp2tdZWYYASCYGaSz_ptyRikAxiHN5bmNuZXRzAIN0Y3CCI4yDdWRwgiOM
+      - --execution-endpoint=http://jbc-execution:8551
+      - --min-sync-peers=1
+      - --accept-terms-of-use
+    volumes:
+      - ./data/prysm:/data
+      - ./config:/config
+    ports:
+      - 0.0.0.0:13000:13000/tcp
+      - 0.0.0.0:13000:13000/udp
+    restart: always
+    
