@@ -3,7 +3,7 @@ services:
 
   jbc-execution:
     container_name: jbc-execution
-    image: ethereum/client-go:v1.13.5
+    image: ethereum/client-go:v1.13.13
     user: root
     entrypoint: /root/geth-script.sh
     command:
