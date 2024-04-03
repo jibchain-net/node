@@ -34,7 +34,7 @@ services:
     image: gcr.io/prysmaticlabs/prysm/beacon-chain:latest
     user: root
     command:
-      - --chain-config-file=/config/config-prysm.yml
+      - --chain-config-file=/config/config.yaml
       - --genesis-state=/config/genesis.ssz
       - --chain-id=${NETWORK_ID}
       - --datadir=/data 
