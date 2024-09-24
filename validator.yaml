@@ -4,6 +4,7 @@ services:
     container_name: jbc-validator
     image: sigp/lighthouse:v5.0.0
     user: root
+    restart: always
     volumes:
       - ./data/lighthouse:/root/.lighthouse
       - ./config:/config
