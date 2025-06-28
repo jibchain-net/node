@@ -1,9 +1,7 @@
-version: "3.8"
 services:
-
   jbc-execution:
     container_name: jbc-execution
-    image: ethereum/client-go:v1.13.13
+    image: ethereum/client-go:release-1.15
     user: root
     entrypoint: /root/geth-script.sh
     command:
@@ -31,7 +29,7 @@ services:
 
   jbc-consensus:
     container_name: jbc-consensus
-    image: sigp/lighthouse:v5.0.0
+    image: sigp/lighthouse:latest
     user: root
     entrypoint: /root/lighthouse-script.sh
     command:
@@ -40,13 +38,9 @@ services:
       - --execution-endpoint=http://jbc-execution:8551
       - --execution-jwt=/config/jwt.hex
       - --testnet-dir=/config
-      - --http-allow-sync-stalled
-      - --disable-peer-scoring
       - --http
       - --http-address=0.0.0.0
       - --http-port=5002
-      - --disable-packet-filter
-      - --eth1
       - --target-peers=${TARGET_PEERS}
       - --enr-address=${NODE_PUBLIC_IP}
       - --enr-udp-port=9100
