@@ -1,31 +1,41 @@
 services:
+  jbc-init:
+    user: root
+    image: erigontech/erigon:latest
+    command: >
+      --datadir /data/erigon
+      init /config/genesis.json
+    volumes:
+      - ./data:/data
+      - ./config:/config
+
   jbc-execution:
     container_name: jbc-execution
-    image: ethereum/client-go:release-1.15
+    restart: unless-stopped
+    image: erigontech/erigon:latest
+    depends_on:
+       - jbc-init
     user: root
-    entrypoint: /root/geth-script.sh
-    command:
-      - "--datadir=/datadir/geth"
-      - "--networkid=${NETWORK_ID}"
-      - --authrpc.addr=0.0.0.0
-      - --authrpc.port=8551
-      - --authrpc.vhosts=*
-      - --authrpc.jwtsecret=/config/jwt.hex
-      - --http
-      - --http.addr=0.0.0.0
-      - --http.api=eth,engine,web3,net
-      - --http.port=8545
-      - --http.corsdomain=*
-      - --http.vhosts=*
+    command: >
+      --datadir /data/erigon
+      --authrpc.addr 0.0.0.0
+      --authrpc.port 8551
+      --authrpc.jwtsecret /config/jwt.hex
+      --db.size.limit 8TB
+      --db.pagesize 16kb
+      --networkid 8899
+      --externalcl
+      --bootnodes "enode://822ae5e5ce3137f068345b11aa656fe53b4fad544328f249b875918500e01d5291d22f0f0668ca8e2e549fa042797a2e3bde66703d973666c4d385a7eb5a4025@188.34.178.225:30303"
+      --staticpeers "enode://822ae5e5ce3137f068345b11aa656fe53b4fad544328f249b875918500e01d5291d22f0f0668ca8e2e549fa042797a2e3bde66703d973666c4d385a7eb5a4025@188.34.178.225:30303"
+      --http.addr="0.0.0.0"
+      --http.api=eth,web3,net,debug,trace,txpool,ots
+
     volumes:
-      - ./genesis.json:/genesis.json
-      - ./data:/datadir
-      - ./geth-script.sh:/root/geth-script.sh
+      - ./data:/data
       - ./config:/config
     ports:
       - 30303:30303
       - 8545:8545
-    restart: always
 
   jbc-consensus:
     container_name: jbc-consensus
