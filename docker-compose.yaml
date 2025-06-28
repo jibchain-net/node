@@ -20,6 +20,7 @@ services:
       --datadir /data/erigon
       --authrpc.addr 0.0.0.0
       --authrpc.port 8551
+      --authrpc.vhosts "*"
       --authrpc.jwtsecret /config/jwt.hex
       --db.size.limit 8TB
       --db.pagesize 16kb
