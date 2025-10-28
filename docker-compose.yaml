@@ -1,11 +1,11 @@
 services:
+
   jbc-execution:
-    container_name: jbc-execution
-    image: ethereum/client-go:release-1.15
+    image: ethereum/client-go
     user: root
     entrypoint: /root/geth-script.sh
     command:
-      - "--datadir=/datadir/geth"
+      - --datadir=/datadir/geth/
       - "--networkid=${NETWORK_ID}"
       - --authrpc.addr=0.0.0.0
       - --authrpc.port=8551
@@ -17,8 +17,8 @@ services:
       - --http.port=8545
       - --http.corsdomain=*
       - --http.vhosts=*
+      - --port=30303
     volumes:
-      - ./genesis.json:/genesis.json
       - ./data:/datadir
       - ./geth-script.sh:/root/geth-script.sh
       - ./config:/config
@@ -28,8 +28,7 @@ services:
     restart: always
 
   jbc-consensus:
-    container_name: jbc-consensus
-    image: sigp/lighthouse:latest
+    image: sigp/lighthouse
     user: root
     entrypoint: /root/lighthouse-script.sh
     command:
@@ -38,22 +37,26 @@ services:
       - --execution-endpoint=http://jbc-execution:8551
       - --execution-jwt=/config/jwt.hex
       - --testnet-dir=/config
+      - --disable-peer-scoring
       - --http
       - --http-address=0.0.0.0
-      - --http-port=5002
+      - --http-port=5003
+      - --disable-packet-filter
       - --target-peers=${TARGET_PEERS}
       - --enr-address=${NODE_PUBLIC_IP}
-      - --enr-udp-port=9100
-      - --enr-tcp-port=9100
+      - --enr-udp-port=9101
+      - --enr-tcp-port=9101
       - --port=9100
-      - --checkpoint-sync-url=https://metrabyte-cl.jibchain.net/
+      - --allow-insecure-genesis-sync
+#      - --checkpoint-sync-url=https://metrabyte-cl.jibchain.net/
       - --prune-blobs=false
     volumes:
       - ./data/lighthouse:/root/.lighthouse
       - ./config:/config
       - ./lighthouse-script.sh:/root/lighthouse-script.sh
     ports:
-      - 0.0.0.0:9100:9100/tcp
-      - 0.0.0.0:9100:9100/udp
-      - 0.0.0.0:5002:5002/tcp
-      - 0.0.0.0:5002:5002/udp
+      - 0.0.0.0:9101:9101/tcp
+      - 0.0.0.0:9101:9101/udp
+      - 0.0.0.0:5003:5003/tcp
+      - 0.0.0.0:5003:5003/udp
+
